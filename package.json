@@ -25,7 +25,7 @@
         "vue-router": "^4.6.3"
     },
     "devDependencies": {
-        "@ilyasso/eslint-config": "^0.0.3",
+        "@ilyasso/eslint-config": "^0.0.6",
         "eslint": "^9.38.0",
         "prettier": "^3.6.2",
         "prettier-plugin-tailwindcss": "^0.7.1",
