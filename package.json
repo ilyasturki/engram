@@ -1,0 +1,35 @@
+{
+    "name": "player",
+    "type": "module",
+    "version": "0.0.0",
+    "private": false,
+    "description": "Self-hosted web application for browsing and playing video files from a configured directory on your server.",
+    "license": "MIT",
+    "scripts": {
+        "dev": "nuxt dev",
+        "build": "nuxt build",
+        "postinstall": "nuxt prepare",
+        "start": "bun --env-file=.env .output/server/index.mjs",
+        "typecheck": "nuxt prepare && vue-tsc -b --noEmit",
+        "format": "prettier --write '**/*.{js,ts,vue,css,scss,html,json,md,yml}'",
+        "format:check": "prettier --check '**/*.{js,ts,vue,css,scss,html,json,md,yml}'",
+        "lint": "eslint",
+        "lint:fix": "eslint --fix",
+        "clear": "rm -rf .nuxt/ .output/ node_modules/ dist/"
+    },
+    "dependencies": {
+        "@tailwindcss/vite": "^4.1.17",
+        "nuxt": "^4.2.1",
+        "tailwindcss": "^4.1.17",
+        "vue": "^3.5.22",
+        "vue-router": "^4.6.3"
+    },
+    "devDependencies": {
+        "@ilyasso/eslint-config": "^0.0.3",
+        "eslint": "^9.38.0",
+        "prettier": "^3.6.2",
+        "prettier-plugin-tailwindcss": "^0.7.1",
+        "typescript": "^5.9.3",
+        "vue-tsc": "^3.1.1"
+    }
+}
