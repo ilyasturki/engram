@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import type { FolderItem } from '~~/shared/types/folder'
+import type { FolderItem, FolderStructure } from '~~/shared/types/folder'
 
-const { folders, loading, error } = useFolders()
+const {
+    data: folders,
+    status,
+    error,
+} = useFetch<FolderStructure>('/api/folders')
+const loading = computed(() => status.value === 'pending')
 
 const currentPath = ref<string[]>([])
 
