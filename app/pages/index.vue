@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const videoSrc = '/api/video/file_example_MP4_1920_18MG.mp4'
+const videoSrc = '/api/video/game-a/file_example_MP4_1920_18MG.mp4'
 </script>
 
 <template>
