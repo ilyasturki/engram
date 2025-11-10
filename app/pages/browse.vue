@@ -54,7 +54,7 @@ function playVideo(item: FolderItem) {
 <template>
     <div class="min-h-screen p-4">
         <div class="mx-auto max-w-7xl">
-            <UHeader
+            <header
                 v-if="currentPath.length > 0"
                 :title="currentPath[currentPath.length - 1]"
                 class="mb-4"
@@ -64,12 +64,12 @@ function playVideo(item: FolderItem) {
                 v-if="currentPath.length > 0"
                 class="mb-4"
             >
-                <UButton
-                    variant="ghost"
+                <button
+                    type="button"
                     @click="navigateUp"
                 >
                     ← Back
-                </UButton>
+                </button>
             </div>
 
             <div
@@ -93,10 +93,11 @@ function playVideo(item: FolderItem) {
                 <p class="text-gray-500">No items found</p>
             </div>
 
-            <UPageGrid v-else>
-                <UCard
+            <div v-else>
+                <button
                     v-for="item in currentItems"
                     :key="item.path"
+                    type="button"
                     class="cursor-pointer transition-shadow hover:shadow-xl"
                     @click="
                         item.type === 'folder' ?
@@ -113,23 +114,17 @@ function playVideo(item: FolderItem) {
                             </div>
                         </div>
                     </div>
-                    <template #header>
-                        <h3 class="truncate text-sm font-medium">
-                            {{ item.name }}
-                        </h3>
-                    </template>
-                    <template
+                    <h3 class="truncate text-sm font-medium">
+                        {{ item.name }}
+                    </h3>
+                    <div
                         v-if="item.type === 'file'"
-                        #footer
+                        class="flex items-center justify-between text-xs text-gray-500"
                     >
-                        <div
-                            class="flex items-center justify-between text-xs text-gray-500"
-                        >
-                            <span>{{ formatFileSize(item.size) }}</span>
-                        </div>
-                    </template>
-                </UCard>
-            </UPageGrid>
+                        <span>{{ formatFileSize(item.size) }}</span>
+                    </div>
+                </button>
+            </div>
         </div>
     </div>
 </template>
