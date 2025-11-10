@@ -16,25 +16,23 @@ export default defineEventHandler(async (event) => {
         v.parse(paramsSchema, data),
     )
 
-    const rangeHeader = getHeader(event, 'range')
+    const videoPath = await getValidatedVideoPath(path)
+    const fileStats = await stat(videoPath)
+    const fileSize = fileStats.size
 
+    const rangeHeader = getHeader(event, 'range')
     if (!rangeHeader) {
         throw createError({
             statusCode: 400,
             message: 'Range header is required for video streaming',
         })
     }
-
-    const videoPath = await getValidatedVideoPath(path)
-
-    const fileStats = await stat(videoPath)
-    const fileSize = fileStats.size
-
     const { start, end } = parseRangeHeader(rangeHeader, fileSize)
 
     const contentLength = end - start + 1
 
-    setResponseStatus(event, 206)
+    const PARTIAL_CONTENT_STATUS = 206
+    setResponseStatus(event, PARTIAL_CONTENT_STATUS)
     setHeader(event, 'Content-Range', `bytes ${start}-${end}/${fileSize}`)
     setHeader(event, 'Content-Length', contentLength)
     setHeader(event, 'Content-Type', getVideoMimeType(videoPath))

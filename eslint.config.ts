@@ -6,6 +6,5 @@ export default ilyasso({
 
         // Slow development down, re-add when the app will be more complex
         'no-await-in-loop': 'off',
-        'no-magic-numbers': 'off',
     },
 })
