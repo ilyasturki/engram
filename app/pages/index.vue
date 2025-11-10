@@ -1,3 +1,3 @@
 <template>
-    <div>Welcome to the Player!</div>
+    <div>Welcome to the Engram!</div>
 </template>

@@ -1,9 +1,9 @@
 {
-    "name": "player",
+    "name": "engram",
     "type": "module",
     "version": "0.0.0",
     "private": false,
-    "description": "Self-hosted web application for browsing and playing video files from a configured directory on your server.",
+    "description": "Self-hosted application for browsing and playing video game recordings from a configured directory on your server.",
     "license": "MIT",
     "scripts": {
         "dev": "nuxt dev",

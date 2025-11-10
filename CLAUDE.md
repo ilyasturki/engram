@@ -1,10 +1,10 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-# About Player
+# About Engram
 
-Player is a self-hosted web application for browsing and playing video files from a configured directory on your server. Designed for personal use, it provides a clean, minimalist interface to navigate your video collection organized by folders, with thumbnail previews and essential playback controls.
+Engram is a self-hosted web application for browsing and playing video files of video games recording from a configured directory on your server. Designed for personal use, it provides a clean, minimalist interface to navigate your video collection organized by folders, with thumbnail previews and essential playback controls.
 
-The application monitors a single configured directory (including all subdirectories), serving video files directly to your browser without transcoding. It supports common video formats including MP4, WebM, and MKV, with features like playback speed control and precise seeking through HTTP range requests.
+The application monitors a single configured directory (including all subdirectories), serving video files.
 
 # Design Philosophy
 
@@ -16,8 +16,6 @@ The application monitors a single configured directory (including all subdirecto
 # Core Features
 
 - **Directory navigation**: Browse videos organized by folder structure
-- **Essential controls**: Play, pause, and seek functionality
-- **Playback speed**: Adjustable playback speed control
 - **Direct playback**: Videos are served as-is without transcoding, respecting original file quality and minimizing server overhead
 - **Format support**: Native browser formats (MP4, WebM) plus MKV support
 - **Single directory monitoring**: Configure one root directory containing your video collection
