@@ -1,8 +1,6 @@
-/**
- * @see https://prettier.io/docs/en/configuration.html
- * @type {import("prettier").Config}
- */
-const config = {
+import type { Config } from 'prettier'
+
+const config: Config = {
     experimentalTernaries: true,
     experimentalOperatorPosition: 'start',
     tabWidth: 4,

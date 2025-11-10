@@ -1,7 +1,2 @@
 @import 'tailwindcss';
-
-@layer base {
-    body {
-        @apply bg-white dark:bg-black;
-    }
-}
+@import '@nuxt/ui';
