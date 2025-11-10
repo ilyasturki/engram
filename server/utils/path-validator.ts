@@ -1,17 +1,19 @@
 import path from 'node:path'
 import { stat } from 'node:fs/promises'
 
-const SAMPLES_DIR = path.resolve(process.cwd(), 'samples')
-
 export async function getValidatedVideoPath(
     requestedPath: string,
 ): Promise<string> {
+    const config = useRuntimeConfig()
+    const libraryPath =
+        config.libraryPath || path.resolve(process.cwd(), 'samples')
+
     const normalizedPath = path
         .normalize(requestedPath)
         .replace(/^(\.\.(\/|\\|$))+/u, '')
-    const absolutePath = path.join(SAMPLES_DIR, normalizedPath)
+    const absolutePath = path.join(libraryPath, normalizedPath)
 
-    if (!absolutePath.startsWith(SAMPLES_DIR)) {
+    if (!absolutePath.startsWith(libraryPath)) {
         throw createError({
             statusCode: 403,
             message: 'Access denied: Path is outside the allowed directory',

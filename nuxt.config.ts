@@ -10,4 +10,7 @@ export default defineNuxtConfig({
     css: ['./app/assets/css/main.css'],
     vite: { plugins: [tailwindcss()] },
     modules: ['@nuxt/ui'],
+    runtimeConfig: {
+        libraryPath: '',
+    },
 })
