@@ -1,0 +1,50 @@
+import path from 'node:path'
+import { stat } from 'node:fs/promises'
+
+const SAMPLES_DIR = path.resolve(process.cwd(), 'samples')
+
+export async function getValidatedVideoPath(
+    requestedPath: string,
+): Promise<string> {
+    const normalizedPath = path
+        .normalize(requestedPath)
+        .replace(/^(\.\.(\/|\\|$))+/u, '')
+    const absolutePath = path.join(SAMPLES_DIR, normalizedPath)
+
+    if (!absolutePath.startsWith(SAMPLES_DIR)) {
+        throw createError({
+            statusCode: 403,
+            message: 'Access denied: Path is outside the allowed directory',
+        })
+    }
+
+    try {
+        const fileStats = await stat(absolutePath)
+        if (!fileStats.isFile()) {
+            throw createError({
+                statusCode: 400,
+                message: 'Path is not a file',
+            })
+        }
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+            throw createError({
+                statusCode: 404,
+                message: 'Video file not found',
+            })
+        }
+        throw error
+    }
+
+    return absolutePath
+}
+
+export function getVideoMimeType(filename: string): string {
+    const ext = filename.toLowerCase().split('.').pop()
+    const mimeTypes: Record<string, string> = {
+        mp4: 'video/mp4',
+        webm: 'video/webm',
+        mkv: 'video/x-matroska',
+    }
+    return mimeTypes[ext || ''] || 'application/octet-stream'
+}
