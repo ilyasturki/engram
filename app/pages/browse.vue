@@ -54,20 +54,22 @@ function playVideo(item: FolderItem) {
 <template>
     <div class="min-h-screen p-4">
         <div class="mx-auto max-w-7xl">
+            <UHeader
+                v-if="currentPath.length > 0"
+                :title="currentPath[currentPath.length - 1]"
+                class="mb-4"
+            />
+
             <div
                 v-if="currentPath.length > 0"
                 class="mb-4"
             >
-                <button
-                    type="button"
-                    class="rounded bg-gray-200 px-4 py-2 hover:bg-gray-300"
+                <UButton
+                    variant="ghost"
                     @click="navigateUp"
                 >
                     ← Back
-                </button>
-                <div class="mt-2 text-sm text-gray-600">
-                    / {{ currentPath.join(' / ') }}
-                </div>
+                </UButton>
             </div>
 
             <div
@@ -103,7 +105,7 @@ function playVideo(item: FolderItem) {
                     "
                 >
                     <div
-                        class="relative flex aspect-[3/5] items-center justify-center overflow-hidden bg-gray-100"
+                        class="relative flex aspect-square items-center justify-center overflow-hidden bg-gray-100"
                     >
                         <div class="text-center">
                             <div class="text-6xl">
