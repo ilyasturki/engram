@@ -61,6 +61,7 @@ The application monitors a single configured directory (including all subdirecto
     - **`/utils`** - Server-side utilities (workspace management, path validation)
 - **`/shared`** - Shared code between client and server
     - **`/types`** - TypeScript type definitions used by both frontend and backend
+- **`/samples`** - Video files for testing and demonstration purposes
 
 # Code Style Requirements
 
