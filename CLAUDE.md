@@ -26,9 +26,8 @@ The application monitors a single configured directory (including all subdirecto
 
 - **Meta-Framework**: Nuxt 4 (SSR disabled, SPA mode, Nitro for backend)
 - **Framework**: Vue 3 with Composition API and TypeScript
-- **UI Components**: Nuxt UI (UButton, UCard, UHeader, UPageGrid)
 - **Styling**: TailwindCSS v4
-- **Icons**: Lucide icons
+- **Icons**: Lucide Icons with nuxt-icons module
 - **Containerization**: Docker (for self-hosted deployment)
 
 ## Commands

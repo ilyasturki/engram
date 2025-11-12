@@ -3,13 +3,13 @@ interface Props {
     src: string
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 </script>
 
 <template>
     <!-- eslint-disable-next-line vue-a11y/media-has-caption -->
     <video
-        :src="src"
+        :src="props.src"
         controls
         class="w-full max-w-4xl rounded-lg shadow-lg"
     >
