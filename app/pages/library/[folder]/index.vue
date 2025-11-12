@@ -14,6 +14,16 @@ const { data: folderData, error } = await useFetch<Folder>(
 
 <template>
     <div class="p-4">
+        <NuxtLink
+            to="/library"
+            class="mb-6 inline-flex items-center gap-2 text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+        >
+            <Icon
+                name="lucide:arrow-left"
+                class="size-5"
+            />
+            <span>Back to library</span>
+        </NuxtLink>
         <div
             v-if="error"
             class="text-center"
@@ -23,14 +33,18 @@ const { data: folderData, error } = await useFetch<Folder>(
             </p>
         </div>
         <div v-else-if="folderData">
-            <h1 class="mb-6 text-2xl font-bold">{{ folderData.path }}</h1>
-            <FolderTable
+            <h1
+                class="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100"
+            >
+                {{ folderData.path }}
+            </h1>
+            <Table
                 v-if="folderData.videos.length > 0"
                 :items="folderData.videos"
             />
             <div
                 v-else
-                class="text-center text-gray-500"
+                class="text-center text-gray-500 dark:text-gray-400"
             >
                 No videos found in this folder
             </div>

@@ -11,7 +11,7 @@ const props = defineProps<Props>()
     <video
         :src="props.src"
         controls
-        class="w-full max-w-4xl rounded-lg shadow-lg"
+        class="w-full max-w-4xl rounded-lg shadow-lg dark:shadow-gray-900/50"
     >
         Your browser does not support the video tag.
     </video>

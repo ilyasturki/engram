@@ -10,9 +10,9 @@ const { data: folders, status, error } = useFetch('/api/folders')
         <p class="text-red-500">Error loading folders: {{ error }}</p>
     </div>
     <div v-else-if="status === 'pending' || folders === undefined">
-        <p class="text-gray-500">Loading...</p>
+        <p class="text-gray-500 dark:text-gray-400">Loading...</p>
     </div>
-    <FolderTable
+    <Table
         v-else
         :items="folders"
     />
