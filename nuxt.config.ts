@@ -12,4 +12,5 @@ export default defineNuxtConfig({
     runtimeConfig: {
         libraryPath: '',
     },
+    modules: ['@nuxt/icon'],
 })
