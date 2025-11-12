@@ -17,8 +17,7 @@ export default defineEventHandler(async (event) => {
     )
 
     const videoPath = await getValidatedVideoPath(path)
-    const fileStats = await stat(videoPath)
-    const fileSize = fileStats.size
+    const { size: fileSize } = await stat(videoPath)
 
     const rangeHeader = getHeader(event, 'range')
     if (!rangeHeader) {

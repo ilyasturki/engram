@@ -49,7 +49,7 @@ export default defineEventHandler(async (): Promise<Folder[]> => {
                 path: path.relative(libraryPath, folderPath),
                 type: 'folder',
                 mtime: folderStat.mtime,
-                children,
+                videos: children,
             })
         }
 

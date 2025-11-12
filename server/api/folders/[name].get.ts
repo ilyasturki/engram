@@ -76,7 +76,7 @@ export default defineEventHandler(async (event): Promise<Folder> => {
             path: path.relative(libraryPath, folderPath),
             type: 'folder',
             mtime: folderStat.mtime,
-            children,
+            videos: children,
         }
     } catch (error) {
         if (error && typeof error === 'object' && 'statusCode' in error) {

@@ -2,7 +2,7 @@ export interface Folder {
     path: string
     type: 'folder'
     mtime: Date
-    children: Video[]
+    videos: Video[]
 }
 export interface Video {
     path: string
