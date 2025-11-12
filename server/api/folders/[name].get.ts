@@ -66,16 +66,16 @@ export default defineEventHandler(async (event): Promise<Folder> => {
             children.push({
                 path: relativePath,
                 size: videoStat.size,
-                mtime: videoStat.mtime,
+                mtime: videoStat.mtime.toISOString(),
             })
         }
 
-        children.sort((a, b) => b.mtime.getTime() - a.mtime.getTime())
+        children.sort((a, b) => b.mtime.localeCompare(a.mtime))
 
         return {
             path: path.relative(libraryPath, folderPath),
             type: 'folder',
-            mtime: folderStat.mtime,
+            mtime: folderStat.mtime.toISOString(),
             videos: children,
         }
     } catch (error) {
