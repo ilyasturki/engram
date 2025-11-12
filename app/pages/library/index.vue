@@ -14,7 +14,6 @@ const { data: folders, status, error } = useFetch('/api/folders')
     </div>
     <FolderTable
         v-else
-        :folders="folders"
-        :error="error"
+        :items="folders"
     />
 </template>

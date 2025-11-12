@@ -1,12 +1,28 @@
 <script setup lang="ts">
-import { formatRelativeTime } from '#imports'
-import type { Folder } from '~~/shared/types/types'
+import { formatFileSize, formatRelativeTime } from '#imports'
+import type { Folder, Video } from '~~/shared/types/types'
+import { computed } from 'vue'
 
 interface Props {
-    folders: Folder[]
+    items: (Folder | Video)[]
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
+
+function getIcon(item: Folder | Video): string {
+    return item.type === 'folder' ? 'lucide:folder' : 'lucide:file-video'
+}
+
+function getMetadata(item: Folder | Video): string {
+    return item.type === 'folder' ?
+            item.videos.length.toString()
+        :   formatFileSize(item.size)
+}
+
+const columnHeader = computed(() => {
+    if (props.items.length === 0) return 'Info'
+    return props.items[0]?.type === 'folder' ? 'Videos' : 'Size'
+})
 </script>
 
 <template>
@@ -20,33 +36,33 @@ defineProps<Props>()
                 <div class="w-10"></div>
                 <div>Name</div>
                 <div class="hidden min-w-32 text-right sm:block">Modified</div>
-                <div class="min-w-20 text-right">Videos</div>
+                <div class="min-w-20 text-right">{{ columnHeader }}</div>
             </div>
             <NuxtLink
-                v-for="folder in folders"
-                :key="folder.path"
-                :to="`/library/${folder.path}`"
+                v-for="item in items"
+                :key="item.path"
+                :to="`/library/${item.path}`"
                 class="group grid grid-cols-[auto_1fr_auto_auto] gap-4 border-b border-gray-100 px-4 py-3 transition-colors last:border-b-0 hover:bg-gray-50 active:bg-gray-100"
             >
                 <div
                     class="flex w-10 items-center justify-center text-gray-400 group-hover:text-gray-600"
                 >
-                    <Icon name="lucide:folder" />
+                    <Icon :name="getIcon(item)" />
                 </div>
                 <div
                     class="flex items-center truncate font-medium text-gray-900"
                 >
-                    {{ folder.path }}
+                    {{ item.path }}
                 </div>
                 <div
                     class="hidden min-w-32 items-center justify-end text-sm text-gray-500 sm:flex"
                 >
-                    {{ formatRelativeTime(new Date(folder.mtime)) }}
+                    {{ formatRelativeTime(new Date(item.mtime)) }}
                 </div>
                 <div
                     class="flex min-w-20 items-center justify-end text-sm text-gray-500"
                 >
-                    {{ folder.videos.length }}
+                    {{ getMetadata(item) }}
                 </div>
             </NuxtLink>
         </div>
