@@ -19,6 +19,18 @@ function getMetadata(item: Folder | Video): string {
         :   formatFileSize(item.size)
 }
 
+function getDisplayName(item: Folder | Video): string {
+    const pathSegments = item.path.split('/')
+    const lastSegment = pathSegments[pathSegments.length - 1]
+
+    if (item.type === 'folder') {
+        return lastSegment
+    }
+
+    const lastDotIndex = lastSegment.lastIndexOf('.')
+    return lastDotIndex > 0 ? lastSegment.substring(0, lastDotIndex) : lastSegment
+}
+
 const columnHeader = computed(() => {
     if (props.items.length === 0) return 'Info'
     return props.items[0]?.type === 'folder' ? 'Videos' : 'Size'
@@ -52,7 +64,7 @@ const columnHeader = computed(() => {
                 <div
                     class="flex items-center truncate font-medium text-gray-900"
                 >
-                    {{ item.path }}
+                    {{ getDisplayName(item) }}
                 </div>
                 <div
                     class="hidden min-w-32 items-center justify-end text-sm text-gray-500 sm:flex"
