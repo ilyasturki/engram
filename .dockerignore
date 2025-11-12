@@ -1,0 +1,65 @@
+# Build outputs
+.output
+.nuxt
+.nitro
+.cache
+dist
+
+# Dependencies
+node_modules
+
+# Git
+.git
+.gitignore
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+
+# Documentation
+docs
+*.md
+
+# Videos
+samples
+*.mp4
+*.avi
+*.mkv
+
+# Linting and Formatting (dev only)
+eslint.config.*
+.eslintrc*
+prettier.config.*
+.prettierrc*
+
+# IDE
+.idea
+.vscode
+.fleet
+.zed
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+.dockerignore
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Test
+*.test.ts
+*.spec.ts

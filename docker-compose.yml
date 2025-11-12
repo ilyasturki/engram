@@ -1,0 +1,14 @@
+services:
+    engram:
+        image: ghcr.io/ilyayturki/workspace:latest
+        restart: unless-stopped
+        ports:
+            - '3000:3000'
+        environment:
+            # Server configuration
+            - HOST=0.0.0.0
+            - PORT=3000
+        volumes:
+            # Mount local directory to persist markdown files
+            # Change './workspace' to your desired local path
+            - ./workspace:/app/workspace
