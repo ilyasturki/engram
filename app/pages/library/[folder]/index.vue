@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { Folder } from '#imports'
+import type * as v from 'valibot'
+import type { GameMetadataSchema } from '~~/shared/utils/game-metadata'
 
 const route = useRoute()
 const { folder } = route.params
@@ -10,6 +12,17 @@ if (folder === undefined || folder === '') {
 const { data: folderData, error } = await useFetch<Folder>(
     `/api/folders/${folder}`,
 )
+
+const dialogRef = ref<{ open: () => void; close: () => void } | null>(null)
+
+function openMetadataDialog() {
+    dialogRef.value?.open()
+}
+
+function handleMetadataSubmit(metadata: v.InferOutput<typeof GameMetadataSchema>) {
+    console.log('Success:', metadata)
+    dialogRef.value?.close()
+}
 </script>
 
 <template>
@@ -33,11 +46,19 @@ const { data: folderData, error } = await useFetch<Folder>(
             </p>
         </div>
         <div v-else-if="folderData">
-            <h1
-                class="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100"
-            >
-                {{ folderData.path }}
-            </h1>
+            <header class="mb-6 flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    {{ folderData.path }}
+                </h1>
+                <button
+                    type="button"
+                    class="rounded-lg border border-gray-200 bg-white px-4 py-2 font-medium text-gray-900 transition-colors hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:active:bg-gray-600"
+                    @click="openMetadataDialog"
+                >
+                    Edit Metadata
+                </button>
+            </header>
+
             <Table
                 v-if="folderData.videos.length > 0"
                 :items="folderData.videos"
@@ -49,5 +70,14 @@ const { data: folderData, error } = await useFetch<Folder>(
                 No videos found in this folder
             </div>
         </div>
+
+        <Dialog ref="dialogRef">
+            <div class="mb-4">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+                    Edit Game Metadata
+                </h2>
+            </div>
+            <GameMetadataForm @submit="handleMetadataSubmit" />
+        </Dialog>
     </div>
 </template>
