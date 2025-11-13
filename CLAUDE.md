@@ -28,14 +28,13 @@ The application monitors a single configured directory (including all subdirecto
 - **Framework**: Vue 3 with Composition API and TypeScript
 - **Styling**: TailwindCSS v4
 - **Icons**: Lucide Icons with nuxt-icons module
+- **Validation**: Valibot
 - **Containerization**: Docker (for self-hosted deployment)
+- **Game API**: RAWG
 
 ## Commands
 
-- `bun run typecheck` - Type checking with vue-tsc
-- `bun run format` - Prettier formatting
-- `bun run lint` - ESLint
-- Never use `bun run dev`
+- Never use `bun run dev` or `bun run typecheck`. Verification is done manually.
 
 ## Key Links
 
@@ -44,6 +43,8 @@ The application monitors a single configured directory (including all subdirecto
 - **Nuxt 4**: `https://nuxt.com/docs/4.x`
 - **Tailwind CSS**: `https://tailwindcss.com/`
 - **Nitro**: `https://nitro.build/guide/`
+- **Valibot**: `https://valibot.dev/`
+- **RAWG**: `https://api.rawg.io/docs/`
 
 # Project Structure
 
