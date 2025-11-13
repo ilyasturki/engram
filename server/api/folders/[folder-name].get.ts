@@ -6,21 +6,22 @@ import type { Folder, Video } from '~~/shared/types/types'
 const VIDEO_EXTENSIONS = ['.mp4', '.webm', '.mkv']
 
 const paramsSchema = v.strictObject({
-    name: v.string(),
+    'folder-name': v.string(),
 })
 
 export default defineEventHandler(async (event): Promise<Folder> => {
     try {
-        const { name } = await getValidatedRouterParams(event, (data) =>
-            v.parse(paramsSchema, data),
+        const { 'folder-name': folderName } = await getValidatedRouterParams(
+            event,
+            (data) => v.parse(paramsSchema, data),
         )
 
         const { libraryPath } = useRuntimeConfig()
 
         const normalizedName = path
-            .normalize(name)
+            .normalize(folderName)
             .replace(/^(\.\.(\/|\\|$))+/u, '')
-        if (normalizedName !== name || name.includes('..')) {
+        if (normalizedName !== folderName || folderName.includes('..')) {
             throw createError({
                 statusCode: 403,
                 statusMessage: 'Forbidden',
@@ -28,7 +29,7 @@ export default defineEventHandler(async (event): Promise<Folder> => {
             })
         }
 
-        const folderPath = path.join(libraryPath, name)
+        const folderPath = path.join(libraryPath, folderName)
         // eslint-disable-next-line unicorn/no-useless-undefined
         const folderStat = await stat(folderPath).catch(() => undefined)
 
@@ -64,6 +65,7 @@ export default defineEventHandler(async (event): Promise<Folder> => {
             const relativePath = path.relative(libraryPath, videoPath)
 
             children.push({
+                type: 'video',
                 path: relativePath,
                 size: videoStat.size,
                 mtime: videoStat.mtime.toISOString(),
