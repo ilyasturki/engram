@@ -10,4 +10,3 @@ services:
             - NUXT_RAWG_API=your-key-here
         volumes:
             - <path-to-library>:/app/library
-            - <path-to-metadata>:/app/metadata

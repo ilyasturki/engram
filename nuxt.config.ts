@@ -11,7 +11,6 @@ export default defineNuxtConfig({
     vite: { plugins: [tailwindcss()] },
     runtimeConfig: {
         libraryPath: '',
-        metadataPath: '',
         rawgApi: '',
     },
     modules: ['@nuxt/icon'],

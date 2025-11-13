@@ -29,7 +29,6 @@ RUN mkdir -p /app/library /app/metadata && chown -R engram:engram /app
 USER engram
 
 ENV NUXT_LIBRARY_PATH=/app/library
-ENV NUXT_METADATA_PATH=/app/metadata
 
 # Start the application
 EXPOSE 3000/tcp

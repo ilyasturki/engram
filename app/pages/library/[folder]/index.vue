@@ -14,12 +14,34 @@ const { data: folderData, error } = await useFetch<Folder>(
 )
 
 const dialogRef = ref<{ open: () => void; close: () => void } | null>(null)
+const isRefreshing = ref(false)
+const refreshError = ref<string | null>(null)
 
 function openMetadataDialog() {
     dialogRef.value?.open()
 }
 
-function handleMetadataSubmit(metadata: v.InferOutput<typeof GameMetadataSchema>) {
+async function refreshMetadata() {
+    if (typeof folder !== 'string') return
+
+    isRefreshing.value = true
+    refreshError.value = null
+
+    try {
+        await $fetch(`/api/folders/${folder}/metadata`, {
+            method: 'POST',
+        })
+    } catch (error) {
+        refreshError.value =
+            error instanceof Error ? error.message : 'Failed to refresh metadata'
+    } finally {
+        isRefreshing.value = false
+    }
+}
+
+function handleMetadataSubmit(
+    metadata: v.InferOutput<typeof GameMetadataSchema>,
+) {
     console.log('Success:', metadata)
     dialogRef.value?.close()
 }
@@ -76,6 +98,20 @@ function handleMetadataSubmit(metadata: v.InferOutput<typeof GameMetadataSchema>
                 <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
                     Edit Game Metadata
                 </h2>
+                <button
+                    type="button"
+                    :disabled="isRefreshing"
+                    class="mt-2 rounded-lg border border-gray-200 bg-white px-4 py-2 font-medium text-gray-900 transition-colors hover:bg-gray-50 active:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:active:bg-gray-600"
+                    @click="refreshMetadata"
+                >
+                    {{ isRefreshing ? 'Refreshing...' : 'Refresh from RAWG' }}
+                </button>
+                <p
+                    v-if="refreshError"
+                    class="mt-2 text-sm text-red-500"
+                >
+                    {{ refreshError }}
+                </p>
             </div>
             <GameMetadataForm @submit="handleMetadataSubmit" />
         </Dialog>

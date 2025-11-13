@@ -24,7 +24,7 @@ defineExpose({
 <template>
     <dialog
         ref="dialogRef"
-        class="backdrop:bg-gray/50 fixed inset-0 m-auto h-fit max-h-[80vh] w-full max-w-md rounded-lg border border-gray-700 p-5 shadow-2xl backdrop:backdrop-blur-sm dark:bg-gray-900"
+        class="backdrop:bg-gray/50 fixed inset-0 m-auto h-fit max-h-[80vh] w-full max-w-md rounded-lg border border-gray-300 p-5 shadow-2xl backdrop:backdrop-blur-sm dark:border-gray-700 dark:bg-gray-900"
         closedby="any"
         @close="emit('close')"
     >
