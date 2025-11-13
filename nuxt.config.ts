@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         libraryPath: '',
         metadataPath: '',
+        rawgApi: '',
     },
     modules: ['@nuxt/icon'],
 })
