@@ -1,23 +1,18 @@
 <script setup lang="ts">
-const dialogRef = ref<HTMLDialogElement | null>(null)
-
 const emit = defineEmits<{
     close: []
 }>()
+defineSlots<{
+    default: []
+}>()
 
+const dialogEl = useTemplateRef('dialogRef')
 function open() {
-    dialogRef.value?.showModal()
+    dialogEl.value?.showModal()
 }
-
 function close() {
-    dialogRef.value?.close()
+    dialogEl.value?.close()
     emit('close')
-}
-
-function handleBackdropClick(event: MouseEvent) {
-    if (event.target === dialogRef.value) {
-        close()
-    }
 }
 
 defineExpose({
@@ -29,42 +24,10 @@ defineExpose({
 <template>
     <dialog
         ref="dialogRef"
-        class="rounded-lg border border-gray-200 bg-white p-6 shadow-xl backdrop:bg-black/50 dark:border-gray-700 dark:bg-gray-800"
-        @click="handleBackdropClick"
+        class="backdrop:bg-gray/50 fixed inset-0 m-auto h-fit max-h-[80vh] w-full max-w-md rounded-lg border border-gray-700 p-5 shadow-2xl backdrop:backdrop-blur-sm dark:bg-gray-900"
+        closedby="any"
         @close="emit('close')"
     >
-        <div class="max-h-[80vh] w-full max-w-2xl overflow-y-auto">
-            <slot />
-        </div>
+        <slot />
     </dialog>
 </template>
-
-<style scoped>
-dialog {
-    animation: dialog-fade-in 0.2s ease-out;
-}
-
-dialog::backdrop {
-    animation: backdrop-fade-in 0.2s ease-out;
-}
-
-@keyframes dialog-fade-in {
-    from {
-        opacity: 0;
-        transform: translateY(-1rem);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes backdrop-fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-</style>
