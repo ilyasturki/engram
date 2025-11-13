@@ -1,14 +1,11 @@
 import path from 'node:path'
-import { parse, strictObject, string } from 'valibot'
+import { parse } from 'valibot'
+import { folderParamsSchema } from '~~/shared/utils/folder-param'
 import type { GameMetadata } from '~~/shared/utils/game-metadata'
 
-const paramsSchema = strictObject({
-    'folder-name': string(),
-})
 export default defineEventHandler(async (event): Promise<GameMetadata> => {
-    const { 'folder-name': folderName } = await getValidatedRouterParams(
-        event,
-        (data) => parse(paramsSchema, data),
+    const { folderName } = await getValidatedRouterParams(event, (data) =>
+        parse(folderParamsSchema, data),
     )
     const { libraryPath } = useRuntimeConfig()
     const folderPath = path.join(libraryPath, folderName)

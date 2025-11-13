@@ -1,39 +1,36 @@
 <script setup lang="ts">
-import type { Folder } from '#imports'
 import type * as v from 'valibot'
+import type { Folder } from '#imports'
 import type { GameMetadataSchema } from '~~/shared/utils/game-metadata'
+import { folderParamsSchema } from '~~/shared/utils/folder-param'
 
-const route = useRoute()
-const { folder } = route.params
-if (folder === undefined || folder === '') {
-    navigateTo('/library')
-}
+const { folderName } = useValidatedRouteParams(folderParamsSchema)
 
 const { data: folderData, error } = await useFetch<Folder>(
-    `/api/folders/${folder}`,
+    `/api/folders/${folderName}`,
 )
 
-const dialogRef = ref<{ open: () => void; close: () => void } | null>(null)
+const dialogEl = useTemplateRef('dialogRef')
 const isRefreshing = ref(false)
-const refreshError = ref<string | null>(null)
+const refreshError = ref<string | undefined>()
 
 function openMetadataDialog() {
-    dialogRef.value?.open()
+    dialogEl.value?.open()
 }
 
 async function refreshMetadata() {
-    if (typeof folder !== 'string') return
-
     isRefreshing.value = true
-    refreshError.value = null
+    refreshError.value = undefined
 
     try {
-        await $fetch(`/api/folders/${folder}/metadata`, {
+        await $fetch(`/api/folders/${folderName}/metadata`, {
             method: 'POST',
         })
-    } catch (error) {
+    } catch (error_) {
         refreshError.value =
-            error instanceof Error ? error.message : 'Failed to refresh metadata'
+            error_ instanceof Error ?
+                error_.message
+            :   'Failed to refresh metadata'
     } finally {
         isRefreshing.value = false
     }
@@ -43,7 +40,7 @@ function handleMetadataSubmit(
     metadata: v.InferOutput<typeof GameMetadataSchema>,
 ) {
     console.log('Success:', metadata)
-    dialogRef.value?.close()
+    dialogEl.value?.close()
 }
 </script>
 

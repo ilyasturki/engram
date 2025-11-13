@@ -39,6 +39,7 @@ export default defineEventHandler(async (): Promise<Folder[]> => {
                 const relativePath = path.relative(libraryPath, videoPath)
 
                 children.push({
+                    type: 'video',
                     path: relativePath,
                     size: videoStat.size,
                     mtime: videoStat.mtime.toISOString(),

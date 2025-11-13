@@ -2,32 +2,17 @@ import { readdir, stat } from 'node:fs/promises'
 import path from 'node:path'
 import * as v from 'valibot'
 import type { Folder, Video } from '~~/shared/types/types'
+import { folderParamsSchema } from '~~/shared/utils/folder-param'
 
 const VIDEO_EXTENSIONS = ['.mp4', '.webm', '.mkv']
 
-const paramsSchema = v.strictObject({
-    'folder-name': v.string(),
-})
-
 export default defineEventHandler(async (event): Promise<Folder> => {
     try {
-        const { 'folder-name': folderName } = await getValidatedRouterParams(
-            event,
-            (data) => v.parse(paramsSchema, data),
+        const { folderName } = await getValidatedRouterParams(event, (data) =>
+            v.parse(folderParamsSchema, data),
         )
 
         const { libraryPath } = useRuntimeConfig()
-
-        const normalizedName = path
-            .normalize(folderName)
-            .replace(/^(\.\.(\/|\\|$))+/u, '')
-        if (normalizedName !== folderName || folderName.includes('..')) {
-            throw createError({
-                statusCode: 403,
-                statusMessage: 'Forbidden',
-                message: 'Invalid folder path',
-            })
-        }
 
         const folderPath = path.join(libraryPath, folderName)
         // eslint-disable-next-line unicorn/no-useless-undefined
