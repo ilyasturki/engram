@@ -12,3 +12,5 @@ services:
             # Mount local directory to persist markdown files
             # Change './workspace' to your desired local path
             - ./workspace:/app/workspace
+            # Mount local directory for video metadata storage
+            - ./metadata:/app/metadata

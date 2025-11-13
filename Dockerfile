@@ -23,12 +23,13 @@ RUN groupadd -r engram && useradd -r -g engram engram
 # Only `.output` folder is needed from the build stage
 COPY --from=build /app/.output /app
 
-# Create workspace directory with proper permissions
-RUN mkdir -p /app/workspace && chown -R engram:engram /app
+# Create workspace and metadata directories with proper permissions
+RUN mkdir -p /app/workspace /app/metadata && chown -R engram:engram /app
 # Switch to non-root user
 USER engram
 
 ENV NUXT_LIBRARY_PATH=/app/workspace
+ENV NUXT_METADATA_PATH=/app/metadata
 
 # Start the application
 EXPOSE 3000/tcp
