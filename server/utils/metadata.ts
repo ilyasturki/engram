@@ -1,6 +1,6 @@
 import * as v from 'valibot'
 import type { GameMetadata } from '~~/shared/utils/game-metadata'
-import { GameMetadataSchema } from '~~/shared/utils/game-metadata'
+import { gameMetadataSchema } from '~~/shared/utils/game-metadata'
 
 export async function fetchMetadata(gameName: string): Promise<GameMetadata> {
     const { rawgApi } = useRuntimeConfig()
@@ -72,7 +72,7 @@ export async function fetchMetadata(gameName: string): Promise<GameMetadata> {
     }
 
     try {
-        return v.parse(GameMetadataSchema, gameMetadata)
+        return v.parse(gameMetadataSchema, gameMetadata)
     } catch (error) {
         throw createError({
             statusCode: 500,

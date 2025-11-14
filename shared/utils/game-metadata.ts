@@ -1,6 +1,6 @@
 import * as v from 'valibot'
 
-export const GameMetadataSchema = v.strictObject({
+export const gameMetadataSchema = v.strictObject({
     title: v.pipe(v.string(), v.minLength(1, 'Title is required')),
     platform: v.pipe(v.string(), v.minLength(1, 'Platform is required')),
     releaseDate: v.pipe(
@@ -12,4 +12,4 @@ export const GameMetadataSchema = v.strictObject({
     genre: v.array(v.string()),
 })
 
-export type GameMetadata = v.InferOutput<typeof GameMetadataSchema>
+export type GameMetadata = v.InferOutput<typeof gameMetadataSchema>

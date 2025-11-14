@@ -13,24 +13,32 @@ defineExpose({
     close: () => dialogEl.value?.close(),
 })
 
-const { data: metadata } = await useFetch(
+const { data: metadata, refresh } = await useFetch(
     `/api/folders/${props.folderName}/metadata`,
 )
 
-function submit(gameMetadata: GameMetadata) {
-    // eslint-disable-next-line no-console
-    console.log('Success:', gameMetadata)
-    dialogEl.value?.close()
-}
-
 const {
-    refresh,
+    execute: generateMetadata,
     status: refreshStatus,
     error: refreshError,
-} = useFetch(`/api/folders/${props.folderName}/metadata`, {
+} = useFetch(`/api/folders/${props.folderName}/generate-metadata`, {
     immediate: false,
     method: 'POST',
 })
+
+async function submit(gameMetadata: GameMetadata) {
+    await $fetch(`/api/folders/${props.folderName}/metadata`, {
+        method: 'POST',
+        body: gameMetadata,
+    })
+    await refresh()
+    dialogEl.value?.close()
+}
+
+async function regenerateMetadata() {
+    await generateMetadata()
+    await refresh()
+}
 </script>
 
 <template>
@@ -43,9 +51,13 @@ const {
                 type="button"
                 :disabled="refreshStatus === 'pending'"
                 class="mt-2 rounded-lg border border-gray-200 bg-white px-4 py-2 font-medium text-gray-900 transition-colors hover:bg-gray-50 active:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:active:bg-gray-600"
-                @click="refresh()"
+                @click="regenerateMetadata()"
             >
-                {{ refreshStatus === 'pending' ? 'Refreshing...' : 'Refresh' }}
+                {{
+                    refreshStatus === 'pending' ? 'Refreshing...' : (
+                        'Refresh from RAWG'
+                    )
+                }}
             </button>
             <p
                 v-if="refreshStatus === 'error'"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as v from 'valibot'
-import { GameMetadataSchema } from '~~/shared/utils/game-metadata'
+import { gameMetadataSchema } from '~~/shared/utils/game-metadata'
 import type { GameMetadata } from '~~/shared/utils/game-metadata'
 
 interface Props {
@@ -34,7 +34,7 @@ const newGenre = ref('')
 
 function validateField(field: keyof typeof formData) {
     try {
-        const fieldSchema = GameMetadataSchema.entries[field]
+        const fieldSchema = gameMetadataSchema.entries[field]
         if (fieldSchema) {
             v.parse(fieldSchema, formData[field])
             errors[field] = ''
@@ -64,7 +64,7 @@ function handleSubmit() {
     }
 
     try {
-        const validatedData = v.parse(GameMetadataSchema, formData)
+        const validatedData = v.parse(gameMetadataSchema, formData)
         isSubmitting.value = true
         emit('submit', validatedData)
     } catch (error) {

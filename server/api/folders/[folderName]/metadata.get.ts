@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises'
 import { METADATA_FILE_NAME } from '~~/server/utils/metadata'
 import { folderParamsSchema } from '~~/shared/utils/folder-param'
 import type { GameMetadata } from '~~/shared/utils/game-metadata'
-import { GameMetadataSchema } from '~~/shared/utils/game-metadata'
+import { gameMetadataSchema } from '~~/shared/utils/game-metadata'
 import path from 'node:path'
 
 export default defineEventHandler(async (event): Promise<GameMetadata> => {
@@ -18,5 +18,5 @@ export default defineEventHandler(async (event): Promise<GameMetadata> => {
     const fileContent = await readFile(metadataFilePath, 'utf8')
     const parsedData = JSON.parse(fileContent)
 
-    return parse(GameMetadataSchema, parsedData)
+    return parse(gameMetadataSchema, parsedData)
 })
