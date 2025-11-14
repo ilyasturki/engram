@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type * as v from 'valibot'
 import type { Folder } from '#imports'
-import type { GameMetadataSchema } from '~~/shared/utils/game-metadata'
+import GameMetadataDialog from '~/components/game-metadata-dialog.vue'
 import { folderParamsSchema } from '~~/shared/utils/folder-param'
 
 const { folderName } = useValidatedRouteParams(folderParamsSchema)
@@ -10,37 +9,9 @@ const { data: folderData, error } = await useFetch<Folder>(
     `/api/folders/${folderName}`,
 )
 
-const dialogEl = useTemplateRef('dialogRef')
-const isRefreshing = ref(false)
-const refreshError = ref<string | undefined>()
-
-function openMetadataDialog() {
-    dialogEl.value?.open()
-}
-
-async function refreshMetadata() {
-    isRefreshing.value = true
-    refreshError.value = undefined
-
-    try {
-        await $fetch(`/api/folders/${folderName}/metadata`, {
-            method: 'POST',
-        })
-    } catch (error_) {
-        refreshError.value =
-            error_ instanceof Error ?
-                error_.message
-            :   'Failed to refresh metadata'
-    } finally {
-        isRefreshing.value = false
-    }
-}
-
-function handleMetadataSubmit(
-    metadata: v.InferOutput<typeof GameMetadataSchema>,
-) {
-    console.log('Success:', metadata)
-    dialogEl.value?.close()
+const gameMetadataDialog = useTemplateRef('gameMetadataDialog')
+function openGameMetadataDialog() {
+    gameMetadataDialog.value?.open()
 }
 </script>
 
@@ -72,7 +43,7 @@ function handleMetadataSubmit(
                 <button
                     type="button"
                     class="rounded-lg border border-gray-200 bg-white px-4 py-2 font-medium text-gray-900 transition-colors hover:bg-gray-50 active:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:active:bg-gray-600"
-                    @click="openMetadataDialog"
+                    @click="openGameMetadataDialog"
                 >
                     Edit Metadata
                 </button>
@@ -90,27 +61,9 @@ function handleMetadataSubmit(
             </div>
         </div>
 
-        <Dialog ref="dialogRef">
-            <div class="mb-4">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
-                    Edit Game Metadata
-                </h2>
-                <button
-                    type="button"
-                    :disabled="isRefreshing"
-                    class="mt-2 rounded-lg border border-gray-200 bg-white px-4 py-2 font-medium text-gray-900 transition-colors hover:bg-gray-50 active:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:active:bg-gray-600"
-                    @click="refreshMetadata"
-                >
-                    {{ isRefreshing ? 'Refreshing...' : 'Refresh from RAWG' }}
-                </button>
-                <p
-                    v-if="refreshError"
-                    class="mt-2 text-sm text-red-500"
-                >
-                    {{ refreshError }}
-                </p>
-            </div>
-            <GameMetadataForm @submit="handleMetadataSubmit" />
-        </Dialog>
+        <GameMetadataDialog
+            ref="gameMetadataDialog"
+            :folder-name
+        />
     </div>
 </template>

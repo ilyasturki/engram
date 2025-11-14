@@ -9,14 +9,15 @@ export async function getGameMetadata(gameName: string): Promise<GameMetadata> {
     if (!rawgApi) {
         throw createError({
             statusCode: 500,
-            message: 'NUXT_RAWG_API environment variable is not configured.',
+            statusMessage:
+                'NUXT_RAWG_API environment variable is not configured.',
         })
     }
 
     if (!gameName || gameName.trim().length === 0) {
         throw createError({
             statusCode: 400,
-            message: 'Game name cannot be empty',
+            statusMessage: 'Game name cannot be empty',
         })
     }
 
@@ -31,7 +32,7 @@ export async function getGameMetadata(gameName: string): Promise<GameMetadata> {
     } catch (error) {
         throw createError({
             statusCode: 502,
-            message: `Failed to connect to RAWG API: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            statusMessage: `Failed to connect to RAWG API: ${error instanceof Error ? error.message : 'Unknown error'}`,
         })
     }
 
@@ -39,40 +40,41 @@ export async function getGameMetadata(gameName: string): Promise<GameMetadata> {
         if (response.status === 401) {
             throw createError({
                 statusCode: 502,
-                message:
+                statusMessage:
                     'Invalid RAWG API key. Please check your NUXT_RAWG_API environment variable.',
             })
         }
         throw createError({
             statusCode: 502,
-            message: `RAWG API request failed with status ${response.status}: ${response.statusText}`,
+            statusMessage: `RAWG API request failed with status ${response.status}: ${response.statusText}`,
         })
     }
 
     let data: RawgApiResponse
     try {
         data = await response.json()
+        console.log(data)
     } catch {
         throw createError({
             statusCode: 502,
-            message: 'Failed to parse RAWG API response as JSON',
+            statusMessage: 'Failed to parse RAWG API response as JSON',
         })
     }
 
     if (!data.results || data.results.length === 0) {
         throw createError({
             statusCode: 204,
-            message: `No game found with name: "${gameName}"`,
+            statusMessage: `No game found with name: "${gameName}"`,
         })
     }
 
     const [game] = data.results
 
-    if (!game.name || !game.description || !game.released) {
+    if (!game.name || !game.released) {
         throw createError({
             statusCode: 500,
-            message:
-                'Game data is incomplete. Missing required fields (name, description, or releaseDate).',
+            statusMessage:
+                'Game data is incomplete. Missing required fields (name or releaseDate).',
         })
     }
 
@@ -92,7 +94,7 @@ export async function getGameMetadata(gameName: string): Promise<GameMetadata> {
     } catch (error) {
         throw createError({
             statusCode: 500,
-            message: `Failed to validate game metadata: ${error instanceof Error ? error.message : 'Unknown validation error'}`,
+            statusMessage: `Failed to validate game metadata: ${error instanceof Error ? error.message : 'Unknown validation error'}`,
         })
     }
 }
@@ -150,7 +152,7 @@ export async function setMetadata(
     } catch (error) {
         throw createError({
             statusCode: 400,
-            message: `Invalid game metadata: ${error instanceof Error ? error.message : 'Unknown validation error'}`,
+            statusMessage: `Invalid game metadata: ${error instanceof Error ? error.message : 'Unknown validation error'}`,
         })
     }
 
@@ -162,7 +164,7 @@ export async function setMetadata(
     if (normalizedPath !== folderPath || folderPath.includes('..')) {
         throw createError({
             statusCode: 403,
-            message: 'Access denied: Invalid folder path',
+            statusMessage: 'Access denied: Invalid folder path',
         })
     }
 
@@ -171,7 +173,7 @@ export async function setMetadata(
     if (!absoluteFolderPath.startsWith(libraryPath)) {
         throw createError({
             statusCode: 403,
-            message: 'Access denied: Path outside library directory',
+            statusMessage: 'Access denied: Path outside library directory',
         })
     }
 
@@ -181,14 +183,14 @@ export async function setMetadata(
     } catch {
         throw createError({
             statusCode: 404,
-            message: 'Folder not found',
+            statusMessage: 'Folder not found',
         })
     }
 
     if (!folderStats.isDirectory()) {
         throw createError({
             statusCode: 400,
-            message: 'Path is not a directory',
+            statusMessage: 'Path is not a directory',
         })
     }
 
@@ -203,7 +205,7 @@ export async function setMetadata(
     } catch (error) {
         throw createError({
             statusCode: 500,
-            message: `Failed to write metadata file: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            statusMessage: `Failed to write metadata file: ${error instanceof Error ? error.message : 'Unknown error'}`,
         })
     }
 }
@@ -219,7 +221,7 @@ export async function getMetadata(
     if (normalizedPath !== folderPath || folderPath.includes('..')) {
         throw createError({
             statusCode: 403,
-            message: 'Access denied: Invalid folder path',
+            statusMessage: 'Access denied: Invalid folder path',
         })
     }
 
@@ -228,7 +230,7 @@ export async function getMetadata(
     if (!absoluteFolderPath.startsWith(libraryPath)) {
         throw createError({
             statusCode: 403,
-            message: 'Access denied: Path outside library directory',
+            statusMessage: 'Access denied: Path outside library directory',
         })
     }
 
@@ -238,14 +240,14 @@ export async function getMetadata(
     } catch {
         throw createError({
             statusCode: 404,
-            message: 'Folder not found',
+            statusMessage: 'Folder not found',
         })
     }
 
     if (!folderStats.isDirectory()) {
         throw createError({
             statusCode: 400,
-            message: 'Path is not a directory',
+            statusMessage: 'Path is not a directory',
         })
     }
 
@@ -268,7 +270,7 @@ export async function getMetadata(
     } catch (error) {
         throw createError({
             statusCode: 500,
-            message: `Failed to read metadata file: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            statusMessage: `Failed to read metadata file: ${error instanceof Error ? error.message : 'Unknown error'}`,
         })
     }
 
@@ -278,7 +280,7 @@ export async function getMetadata(
     } catch {
         throw createError({
             statusCode: 500,
-            message: 'Invalid JSON in metadata file',
+            statusMessage: 'Invalid JSON in metadata file',
         })
     }
 
@@ -287,7 +289,7 @@ export async function getMetadata(
     } catch (error) {
         throw createError({
             statusCode: 500,
-            message: `Invalid metadata format: ${error instanceof Error ? error.message : 'Unknown validation error'}`,
+            statusMessage: `Invalid metadata format: ${error instanceof Error ? error.message : 'Unknown validation error'}`,
         })
     }
 }
