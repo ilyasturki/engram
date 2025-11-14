@@ -1,28 +1,19 @@
 <script setup lang="ts">
 import * as v from 'valibot'
 import { GameMetadataSchema } from '~~/shared/utils/game-metadata'
+import type { GameMetadata } from '~~/shared/utils/game-metadata'
 
 interface Props {
-    initialData?: {
-        title: string
-        description: string
-        platform: string
-        releaseDate: string
-        developer: string
-        publisher: string
-        genre: string[]
-    }
+    initialData?: GameMetadata
 }
 
 const props = defineProps<Props>()
-
 const emit = defineEmits<{
-    submit: [metadata: v.InferOutput<typeof GameMetadataSchema>]
+    submit: [metadata: GameMetadata]
 }>()
 
-const formData = reactive({
+const formData = reactive<GameMetadata>({
     title: props.initialData?.title ?? '',
-    description: props.initialData?.description ?? '',
     platform: props.initialData?.platform ?? '',
     releaseDate: props.initialData?.releaseDate ?? '',
     developer: props.initialData?.developer ?? '',
@@ -30,7 +21,14 @@ const formData = reactive({
     genre: props.initialData?.genre ?? [],
 })
 
-const errors = reactive<Record<string, string>>({})
+const errors = reactive<Record<keyof GameMetadata, string>>({
+    title: '',
+    platform: '',
+    releaseDate: '',
+    developer: '',
+    publisher: '',
+    genre: '',
+})
 const isSubmitting = ref(false)
 const newGenre = ref('')
 
@@ -61,7 +59,7 @@ function removeGenre(index: number) {
 }
 
 function handleSubmit() {
-    for (const key of Object.keys(errors)) {
+    for (const key of Object.keys(errors) as (keyof GameMetadata)[]) {
         errors[key] = ''
     }
 
@@ -72,7 +70,7 @@ function handleSubmit() {
     } catch (error) {
         if (error instanceof v.ValiError) {
             for (const issue of error.issues) {
-                const path = issue.path?.[0]?.key
+                const path = issue.path?.[0]?.key as keyof GameMetadata
                 if (path && typeof path === 'string') {
                     errors[path] = issue.message
                 }
@@ -108,28 +106,6 @@ function handleSubmit() {
                 class="mt-1 text-sm text-red-600 dark:text-red-400"
             >
                 {{ errors.title }}
-            </p>
-        </div>
-
-        <div>
-            <label
-                for="description"
-                class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-100"
-            >
-                Description
-            </label>
-            <textarea
-                id="description"
-                v-model="formData.description"
-                rows="4"
-                class="w-full rounded-lg border border-gray-200 bg-white px-4 py-2 text-gray-900 transition-colors focus:border-gray-400 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-500"
-                @blur="validateField('description')"
-            />
-            <p
-                v-if="errors.description"
-                class="mt-1 text-sm text-red-600 dark:text-red-400"
-            >
-                {{ errors.description }}
             </p>
         </div>
 

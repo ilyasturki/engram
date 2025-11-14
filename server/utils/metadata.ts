@@ -1,29 +1,13 @@
 import * as v from 'valibot'
 import type { GameMetadata } from '~~/shared/utils/game-metadata'
 import { GameMetadataSchema } from '~~/shared/utils/game-metadata'
-import { readFile, stat, writeFile } from 'node:fs/promises'
-import path from 'node:path'
 
-export async function getGameMetadata(gameName: string): Promise<GameMetadata> {
+export async function fetchMetadata(gameName: string): Promise<GameMetadata> {
     const { rawgApi } = useRuntimeConfig()
-    if (!rawgApi) {
-        throw createError({
-            statusCode: 500,
-            statusMessage:
-                'NUXT_RAWG_API environment variable is not configured.',
-        })
-    }
-
-    if (!gameName || gameName.trim().length === 0) {
-        throw createError({
-            statusCode: 400,
-            statusMessage: 'Game name cannot be empty',
-        })
-    }
 
     const searchUrl = new URL('https://api.rawg.io/api/games')
     searchUrl.searchParams.set('key', rawgApi)
-    searchUrl.searchParams.set('search', gameName.trim())
+    searchUrl.searchParams.set('search', gameName)
     searchUrl.searchParams.set('page_size', '1')
 
     let response: Response
@@ -53,7 +37,6 @@ export async function getGameMetadata(gameName: string): Promise<GameMetadata> {
     let data: RawgApiResponse
     try {
         data = await response.json()
-        console.log(data)
     } catch {
         throw createError({
             statusCode: 502,
@@ -80,7 +63,6 @@ export async function getGameMetadata(gameName: string): Promise<GameMetadata> {
 
     const gameMetadata: GameMetadata = {
         title: game.name,
-        description: game.description,
         platform:
             game.platforms?.map((p) => p.platform.name).join(', ') || 'Unknown',
         releaseDate: game.released,
@@ -143,153 +125,4 @@ interface RawgApiResponse {
     results: RawgGame[]
 }
 
-export async function setMetadata(
-    gameMetadata: GameMetadata,
-    folderPath: string,
-): Promise<void> {
-    try {
-        v.parse(GameMetadataSchema, gameMetadata)
-    } catch (error) {
-        throw createError({
-            statusCode: 400,
-            statusMessage: `Invalid game metadata: ${error instanceof Error ? error.message : 'Unknown validation error'}`,
-        })
-    }
-
-    const { libraryPath } = useRuntimeConfig()
-
-    const normalizedPath = path
-        .normalize(folderPath)
-        .replace(/^(\.\.(\/|\\|$))+/u, '')
-    if (normalizedPath !== folderPath || folderPath.includes('..')) {
-        throw createError({
-            statusCode: 403,
-            statusMessage: 'Access denied: Invalid folder path',
-        })
-    }
-
-    const absoluteFolderPath = path.join(libraryPath, normalizedPath)
-
-    if (!absoluteFolderPath.startsWith(libraryPath)) {
-        throw createError({
-            statusCode: 403,
-            statusMessage: 'Access denied: Path outside library directory',
-        })
-    }
-
-    let folderStats
-    try {
-        folderStats = await stat(absoluteFolderPath)
-    } catch {
-        throw createError({
-            statusCode: 404,
-            statusMessage: 'Folder not found',
-        })
-    }
-
-    if (!folderStats.isDirectory()) {
-        throw createError({
-            statusCode: 400,
-            statusMessage: 'Path is not a directory',
-        })
-    }
-
-    const metadataFilePath = path.join(absoluteFolderPath, 'metadata.json')
-
-    try {
-        await writeFile(
-            metadataFilePath,
-            JSON.stringify(gameMetadata, undefined, 4),
-            'utf8',
-        )
-    } catch (error) {
-        throw createError({
-            statusCode: 500,
-            statusMessage: `Failed to write metadata file: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        })
-    }
-}
-
-export async function getMetadata(
-    folderPath: string,
-): Promise<GameMetadata | undefined> {
-    const { libraryPath } = useRuntimeConfig()
-
-    const normalizedPath = path
-        .normalize(folderPath)
-        .replace(/^(\.\.(\/|\\|$))+/u, '')
-    if (normalizedPath !== folderPath || folderPath.includes('..')) {
-        throw createError({
-            statusCode: 403,
-            statusMessage: 'Access denied: Invalid folder path',
-        })
-    }
-
-    const absoluteFolderPath = path.join(libraryPath, normalizedPath)
-
-    if (!absoluteFolderPath.startsWith(libraryPath)) {
-        throw createError({
-            statusCode: 403,
-            statusMessage: 'Access denied: Path outside library directory',
-        })
-    }
-
-    let folderStats
-    try {
-        folderStats = await stat(absoluteFolderPath)
-    } catch {
-        throw createError({
-            statusCode: 404,
-            statusMessage: 'Folder not found',
-        })
-    }
-
-    if (!folderStats.isDirectory()) {
-        throw createError({
-            statusCode: 400,
-            statusMessage: 'Path is not a directory',
-        })
-    }
-
-    const metadataFilePath = path.join(absoluteFolderPath, 'metadata.json')
-
-    let fileExists = true
-    try {
-        await stat(metadataFilePath)
-    } catch {
-        fileExists = false
-    }
-
-    if (!fileExists) {
-        return undefined
-    }
-
-    let fileContent: string
-    try {
-        fileContent = await readFile(metadataFilePath, 'utf8')
-    } catch (error) {
-        throw createError({
-            statusCode: 500,
-            statusMessage: `Failed to read metadata file: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        })
-    }
-
-    let parsedData: unknown
-    try {
-        parsedData = JSON.parse(fileContent)
-    } catch {
-        throw createError({
-            statusCode: 500,
-            statusMessage: 'Invalid JSON in metadata file',
-        })
-    }
-
-    try {
-        return v.parse(GameMetadataSchema, parsedData)
-    } catch (error) {
-        throw createError({
-            statusCode: 500,
-            statusMessage: `Invalid metadata format: ${error instanceof Error ? error.message : 'Unknown validation error'}`,
-        })
-    }
-}
+export const METADATA_FILE_NAME = 'metadata.json'

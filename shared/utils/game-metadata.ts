@@ -2,7 +2,6 @@ import * as v from 'valibot'
 
 export const GameMetadataSchema = v.strictObject({
     title: v.pipe(v.string(), v.minLength(1, 'Title is required')),
-    description: v.pipe(v.string(), v.minLength(1, 'Description is required')),
     platform: v.pipe(v.string(), v.minLength(1, 'Platform is required')),
     releaseDate: v.pipe(
         v.string(),
