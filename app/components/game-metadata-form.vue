@@ -3,23 +3,20 @@ import * as v from 'valibot'
 import { gameMetadataSchema } from '~~/shared/utils/game-metadata'
 import type { GameMetadata } from '~~/shared/utils/game-metadata'
 
-interface Props {
-    initialData?: GameMetadata
-}
+const formData = defineModel<GameMetadata>({
+    default: {
+        title: '',
+        platform: '',
+        releaseDate: '',
+        developer: '',
+        publisher: '',
+        genre: [],
+    },
+})
 
-const props = defineProps<Props>()
 const emit = defineEmits<{
     submit: [metadata: GameMetadata]
 }>()
-
-const formData = reactive<GameMetadata>({
-    title: props.initialData?.title ?? '',
-    platform: props.initialData?.platform ?? '',
-    releaseDate: props.initialData?.releaseDate ?? '',
-    developer: props.initialData?.developer ?? '',
-    publisher: props.initialData?.publisher ?? '',
-    genre: props.initialData?.genre ?? [],
-})
 
 const errors = reactive<Record<keyof GameMetadata, string>>({
     title: '',
@@ -32,11 +29,11 @@ const errors = reactive<Record<keyof GameMetadata, string>>({
 const isSubmitting = ref(false)
 const newGenre = ref('')
 
-function validateField(field: keyof typeof formData) {
+function validateField(field: keyof GameMetadata) {
     try {
         const fieldSchema = gameMetadataSchema.entries[field]
         if (fieldSchema) {
-            v.parse(fieldSchema, formData[field])
+            v.parse(fieldSchema, formData.value[field])
             errors[field] = ''
         }
     } catch (error) {
@@ -48,14 +45,14 @@ function validateField(field: keyof typeof formData) {
 
 function addGenre() {
     const trimmedGenre = newGenre.value.trim()
-    if (trimmedGenre && !formData.genre.includes(trimmedGenre)) {
-        formData.genre.push(trimmedGenre)
+    if (trimmedGenre && !formData.value.genre.includes(trimmedGenre)) {
+        formData.value.genre.push(trimmedGenre)
         newGenre.value = ''
     }
 }
 
 function removeGenre(index: number) {
-    formData.genre.splice(index, 1)
+    formData.value.genre.splice(index, 1)
 }
 
 function handleSubmit() {
@@ -64,7 +61,7 @@ function handleSubmit() {
     }
 
     try {
-        const validatedData = v.parse(gameMetadataSchema, formData)
+        const validatedData = v.parse(gameMetadataSchema, formData.value)
         isSubmitting.value = true
         emit('submit', validatedData)
     } catch (error) {

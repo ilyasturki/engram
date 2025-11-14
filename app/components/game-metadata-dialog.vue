@@ -67,7 +67,7 @@ async function regenerateMetadata() {
             </p>
         </div>
         <GameMetadataForm
-            :initial-data="metadata"
+            v-model="metadata"
             @submit="submit"
         />
     </Dialog>
