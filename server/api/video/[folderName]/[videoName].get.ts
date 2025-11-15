@@ -1,22 +1,19 @@
 import { createReadStream } from 'node:fs'
 import { stat } from 'node:fs/promises'
+import path from 'node:path'
 import * as v from 'valibot'
-import {
-    getValidatedVideoPath,
-    getVideoMimeType,
-} from '~~/server/utils/path-validator'
+import { getVideoMimeType } from '~~/server/utils/path-validator'
 import { parseRangeHeader } from '~~/server/utils/range-parser'
-
-const paramsSchema = v.strictObject({
-    path: v.string(),
-})
+import { videoParamsSchema } from '~~/shared/utils/folder-param'
 
 export default defineEventHandler(async (event) => {
-    const { path } = await getValidatedRouterParams(event, (data) =>
-        v.parse(paramsSchema, data),
+    const { folderName, videoName } = await getValidatedRouterParams(
+        event,
+        (data) => v.parse(videoParamsSchema, data),
     )
 
-    const videoPath = await getValidatedVideoPath(path)
+    const { libraryPath } = useRuntimeConfig()
+    const videoPath = path.join(libraryPath, folderName, videoName)
     const { size: fileSize } = await stat(videoPath)
 
     const rangeHeader = getHeader(event, 'range')
